@@ -7,9 +7,10 @@ A simple queueing system wrapper around RQ, to setup worker and job for WebPortf
 
 from setuptools import setup
 
+__version__ = "0.1.2"
 setup(
     name="webportfolio-rq-worker",
-    version="0.1.1",
+    version=__version__,
     license="MIT",
     author="Mardix",
     author_email='mardix@pylot.io',

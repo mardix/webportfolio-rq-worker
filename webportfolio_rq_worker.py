@@ -23,9 +23,9 @@ class RQ_Worker(object):
 
     def init_app(self, app):
         uri = app.config.get("RQ_WORKER_URI")
-        name = app.config.get("RQ_WORKER_URI", "default")
+        name = app.config.get("RQ_WORKER_NAME", "default")
         ttl = app.config.get("RQ_WORKER_TTL", 600)
-        result_ttl = app.config.get("RQ_WORKER_RESULT_TTL")
+        result_ttl = app.config.get("RQ_WORKER_RESULT_TTL", 7200)
         self.__init__(uri=uri, name=name, ttl=ttl, result_ttl=result_ttl)
 
     def add_job(self, f, *args, **kwargs):

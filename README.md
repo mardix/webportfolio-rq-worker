@@ -12,8 +12,8 @@ Creates a simple worker to add job, start worker etc
     
     class Config(object):
         
-        RQ_WORKER_URI = ""  # The uri
-        RQ_WORKER_NAME = ""  # The name of the worker
+        RQ_WORKER_URI = ""  # The redis uri
+        RQ_WORKER_NAME = "default"  # The name of the worker
         RQ_WORKER_TTL = 600  # TTL
         RQ_WORKER_RESULT_TTL = 7200  # How long the results stay in
     
