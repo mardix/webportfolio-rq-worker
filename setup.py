@@ -1,18 +1,20 @@
 """
-Webportfolio-rq
+WebPortfolio-RQ-Worker
+
+A simple queueing system wrapper around RQ, to setup worker and job for WebPortfolio application
+
 """
 
 from setuptools import setup
 
-
 setup(
     name="webportfolio-rq-worker",
-    version="0.1.0",
+    version="0.1.1",
     license="MIT",
     author="Mardix",
     author_email='mardix@pylot.io',
     description="RQ Worker wrapper for WebPortfolio",
-    long_description="",
+    long_description=__doc__,
     url='http://github.com/mardix/webportfolio-rq-worker/',
     download_url='http://github.com/mardix/webportfolio-rq-worker/tarball/master',
     py_modules=['webportfolio_rq_worker'],
@@ -33,8 +35,8 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules'
-    ],
-    zip_safe=False
+    ]
 )

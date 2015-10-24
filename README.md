@@ -8,6 +8,16 @@ Creates a simple worker to add job, start worker etc
     
 ## Usage
 
+    # config.py
+    
+    class Config(object):
+        
+        RQ_WORKER_URI = ""  # The uri
+        RQ_WORKER_NAME = ""  # The name of the worker
+        RQ_WORKER_TTL = 600  # TTL
+        RQ_WORKER_RESULT_TTL = 7200  # How long the results stay in
+    
+    
     # extras.py
     
     from webportfolio import WebPortfolio
@@ -16,15 +26,11 @@ Creates a simple worker to add job, start worker etc
     rq_worker = wp_rq_worker.RQ_Worker()
     WebPortfolio.bind(rq_worker)
     
-    
+   
     # views.py
     
     import extras
-    
-    @extras.rq_worker.job
-    def hello():
-        pass
-        
+            
     def hi():
         data = {}
         job = extras.rq_worker.add_job(callback, **data)
@@ -40,7 +46,9 @@ Creates a simple worker to add job, start worker etc
         
     # manager.py
     
-    import extras
+    import webportfolio_rq_worker as wp_rq_worker
+    
+    rq_worker = wp_rq_worker.RQ_Worker(uri="***")
     
     # run the worker
-    extras.rq_worker.run()
+    rq_worker.run()

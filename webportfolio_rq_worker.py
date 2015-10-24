@@ -1,15 +1,3 @@
-"""
-WebPortfolio RQ Worker
-
-A simple RQ manager to interact with a connected RQ worker and job
-
-requirements:
-
-rq==0.5.3
-
-It has only on Q name: default
-
-"""
 
 import functools
 import redis
@@ -18,6 +6,13 @@ from rq import Worker, Queue, Connection
 class RQ_Worker(object):
 
     def __init__(self, uri=None, name="default", ttl=600, result_ttl=3600):
+        """
+        :param uri: The uri dsn
+        :param name: the name of the queue, which will also use it as the queue
+        :param ttl: TTL
+        :param result_ttl: Result TTL
+        :return:
+        """
         self.name = name
         self.ttl = ttl
         self.result_ttl = result_ttl
@@ -27,10 +22,10 @@ class RQ_Worker(object):
             self.q = Queue(name=self.name, connection=self.conn)
 
     def init_app(self, app):
-        uri = app.config.get("RQ_URI")
-        name = app.config.get("RQ_URI", "default")
-        ttl = app.config.get("RQ_TTL", 600)
-        result_ttl = app.config.get("RQ_RESULT_TTL")
+        uri = app.config.get("RQ_WORKER_URI")
+        name = app.config.get("RQ_WORKER_URI", "default")
+        ttl = app.config.get("RQ_WORKER_TTL", 600)
+        result_ttl = app.config.get("RQ_WORKER_RESULT_TTL")
         self.__init__(uri=uri, name=name, ttl=ttl, result_ttl=result_ttl)
 
     def add_job(self, f, *args, **kwargs):
@@ -45,14 +40,15 @@ class RQ_Worker(object):
         def my_job(args):
             pass
 
-        rq_worker.add(my_job, args)
+        rq_worker.add_job(my_job, *args, **args)
         """
 
-        if "result_ttl" not in kwargs:
-            kwargs["result_ttl"] = self.result_ttl
-        if "ttl" not in kwargs:
-            kwargs["ttl"] = self.ttl
-        return self.q.enqueue(f, *args, **kwargs)
+        kwargs.setdefault("result_ttl", self.result_ttl)
+        kwargs.setdefault("ttl", self.ttl)
+        f_name = f
+        if callable(f) and f.__module__ == '__main__':
+            f_name = f.__name__
+        return self.q.enqueue(f_name, *args, **kwargs)
 
     def get_job(self, job_id):
         """
@@ -67,27 +63,14 @@ class RQ_Worker(object):
             is_queued
             result
 
+            created_at
+            ended_at
+            enqueued_at
+
         useful methods:
             get_status()
         """
         return self.q.fetch_job(job_id)
-
-    def job(self, f):
-        """
-        A decorator to add to function, to automatically enqueue
-        :return:
-
-        :example:
-
-        @rq_worker.job
-        def my_job(args):
-            pass
-
-        """
-        @functools.wraps(f)
-        def delay(*args, **kwargs):
-            return self.add_job(f, *args, **kwargs)
-        return delay
 
     def run(self):
         """
@@ -108,4 +91,20 @@ class RQ_Worker(object):
         c = self.q.count
         self.q.empty()
 
+    def _job(self, f):
+        """
+        A decorator to add to function, to automatically enqueue
+        :return:
+
+        :example:
+
+        @rq_worker.job
+        def my_job(args):
+            pass
+
+        """
+        @functools.wraps(f)
+        def delay(*args, **kwargs):
+            return self.add_job(f, *args, **kwargs)
+        return delay
 
