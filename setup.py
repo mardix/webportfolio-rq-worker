@@ -23,7 +23,7 @@ setup(
     platforms='any',
     install_requires=[
         'rq==0.5.3',
-        'redis==2.9.1'
+        'redis==4.4.4'
     ],
     classifiers=[
         'Environment :: Web Environment',
